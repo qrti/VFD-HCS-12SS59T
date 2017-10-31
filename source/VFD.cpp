@@ -9,17 +9,17 @@ SPISettings settingsA(SPIPARS);
 
 void VFD::init()
 {
-    pinMode(Pin_VFD_RESET, OUTPUT);
-    pinMode(Pin_VFD_VDON, OUTPUT);
-    pinMode(Pin_VFD_CS, OUTPUT);
+	pinMode(Pin_VFD_RESET, OUTPUT);
+	pinMode(Pin_VFD_VDON, OUTPUT);
+	pinMode(Pin_VFD_CS, OUTPUT);
 
 	digitalWrite(Pin_VFD_RESET, HIGH);		// VFD _RESET OFF
-    digitalWrite(Pin_VFD_VDON, HIGH);		//     _DISPV
-    digitalWrite(Pin_VFD_CS, HIGH);			//     _CS   
+	digitalWrite(Pin_VFD_VDON, HIGH);		//     _DISPV
+	digitalWrite(Pin_VFD_CS, HIGH);			//     _CS
 
 	SPI.begin();
 
-	digitalWrite(Pin_VFD_VDON, HIGH);		// Vdisp OFF	
+	digitalWrite(Pin_VFD_VDON, HIGH);		// Vdisp OFF
 	delay(1000);
 
 	digitalWrite(Pin_VFD_VDON, LOW);		// Vdisp ON
@@ -47,14 +47,14 @@ void VFD::off()
 
 void VFD::write(char* text)
 {
-	scrLen = strlen(text);				
+	scrLen = strlen(text);
 	scrPos = NUMDIGITS-1;
 
 	if(scrLen > BUFSIZE-1){
 		scrLen = BUFSIZE-1;
 		text[scrLen] = '\0';
 	}
-	
+
 	strcpy(buf, text);
 	display();
 }
@@ -65,11 +65,11 @@ void doScroll()
 
 	if(Vfd.scrMode > 0){
 		if(++Vfd.scrPos >= Vfd.scrLen)
-			Vfd.scrPos = 0;		
+			Vfd.scrPos = 0;
 	}
 	else{
 		if(--Vfd.scrPos < 0)
-			Vfd.scrPos = Vfd.scrLen-1;			
+			Vfd.scrPos = Vfd.scrLen-1;
 	}
 }
 
@@ -88,13 +88,13 @@ void VFD::scroll(int16_t mode)
 		if(!tirat){
 			Timer1.attachInterrupt(doScroll);
 			tirat = true;
-		}		
+		}
 	}
 }
 
 void VFD::display()
 {
-	SPI.beginTransaction(settingsA);	
+	SPI.beginTransaction(settingsA);
 	select(Pin_VFD_CS);
 
 	sendCmdSeq(VFD_DCRAM_WR, 0);
@@ -126,7 +126,7 @@ void VFD::deSelect(int pin)
 
 void VFD::sendCmd(char cmd, char arg)
 {
-	select(Pin_VFD_CS);					// select 
+	select(Pin_VFD_CS);					// select
 	SPI.transfer(cmd | arg);			// send command and argument
 	delayMicroseconds(8);				// 1/2 tCSH
 	deSelect(Pin_VFD_CS);				// deselect
@@ -153,7 +153,7 @@ char VFD::getCode(char c)
 	else if(c>='a' && c<='z')			// 97.. -> 17..
 		c -= 80;
 	else								// unvalid -> ?
-		c = 79;						
+		c = 79;
 
 	return c;
 }

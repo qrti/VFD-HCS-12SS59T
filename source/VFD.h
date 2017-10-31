@@ -28,9 +28,9 @@
 #define BUFSIZE			100			// display/scroll buffer
 
 const int Pin_VFD_RESET = 49;		// VFD _RESET
-const int Pin_VFD_VDON  = 48;       //     _VDON Vdisp 0=ON 1=OFF
-const int Pin_VFD_CS    = 53;		//     _CS   chip select, SPI SS 
-const int Pin_RED_LED13 = 13;       // LED standard 
+const int Pin_VFD_VDON  = 48;		//     _VDON Vdisp 0=ON 1=OFF
+const int Pin_VFD_CS    = 53;		//     _CS   chip select, SPI SS
+const int Pin_RED_LED13 = 13;		// LED standard
 
 class VFD
 {
@@ -47,7 +47,7 @@ public:
 
 protected:
 
-private:	
+private:
 	char buf[BUFSIZE];
 
 	void select(int pin);

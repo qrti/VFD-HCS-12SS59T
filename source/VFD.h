@@ -1,4 +1,4 @@
-// VFD.h, vacuum fluroescent display driver for Samsung HCS-12SS59T, V0.5 171030 qrt@qland.de
+// VFD.h, vacuum fluorescent display driver for Samsung HCS-12SS59T, V0.5 171030 qrt@qland.de
 
 #ifndef _VFD_h
 #define _VFD_h

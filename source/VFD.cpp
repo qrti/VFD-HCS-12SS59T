@@ -1,4 +1,4 @@
-// VFD.cpp, vacuum fluroescent display driver for Samsung HCS-12SS59T, V0.5 171030 qrt@qland.de
+// VFD.cpp, vacuum fluorescent display driver for Samsung HCS-12SS59T, V0.5 171030 qrt@qland.de
 
 #include "VFD.h"
 #include "TimerOne.h"
@@ -152,7 +152,7 @@ char VFD::getCode(char c)
 		c += 16;
 	else if(c>='a' && c<='z')			// 97.. -> 17..
 		c -= 80;
-	else								// unvalid -> ?
+	else								// invalid -> ?
 		c = 79;
 
 	return c;

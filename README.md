@@ -12,7 +12,7 @@ quick and simple driver and example
 ### Display
 ![display schematics](images/schematics_display.png)
 
-- mix normal and schottky diodes on F- for desired voltage
+- mix normal and schottky diodes on VF- for desired voltage
 - keeping F voltage low extends tungsten filament lifetime  
   voltages starting with 2.7 V up to 3.6 V are working  
   do not exceed 125 mA!

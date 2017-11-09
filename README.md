@@ -40,7 +40,9 @@ quick and simple schematics, driver and example
 __V0.5__  
 initial version  
 __V0.6__  
-AC filament supply
+AC filament supply  
+__V0.7__  
+AC filament supply _VDON
 
 ## Links
 http://www.lapis-semi.com/en/data/datasheet-file_db/display/FEDL9289-01.pdf  

@@ -42,7 +42,10 @@ initial version
 __V0.6__  
 AC filament supply  
 __V0.7__  
-AC filament supply _VDON
+AC filament supply _VDON  
+__V0.8__  
+AC filament supply polarity correction
+
 
 ## Links
 http://www.lapis-semi.com/en/data/datasheet-file_db/display/FEDL9289-01.pdf  

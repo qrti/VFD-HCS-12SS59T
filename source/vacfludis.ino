@@ -1,6 +1,7 @@
-// VFD.cpp, vacuum fluorescent example for Samsung HCS-12SS59T, V0.5 171030 qrt@qland.de
+// VFD.cpp, vacuum fluroescent example for Samsung HCS-12SS59T, V0.9 171112 qrt@qland.de
 
 #include <Arduino.h>
+
 #include "VFD.h"
 
 void setup()

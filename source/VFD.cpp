@@ -1,4 +1,4 @@
-// VFD.cpp, vacuum fluorescent display driver for Samsung HCS-12SS59T, V0.5 171030 qrt@qland.de
+// VFD.cpp, vacuum fluorescent display driver for Samsung HCS-12SS59T, V0.9 171112 qrt@qland.de
 
 #include "VFD.h"
 #include "TimerOne.h"
@@ -10,20 +10,28 @@ SPISettings settingsA(SPIPARS);
 void VFD::init()
 {
 	pinMode(Pin_VFD_RESET, OUTPUT);
-	pinMode(Pin_VFD_VDON, OUTPUT);
 	pinMode(Pin_VFD_CS, OUTPUT);
 
 	digitalWrite(Pin_VFD_RESET, HIGH);		// VFD _RESET OFF
-	digitalWrite(Pin_VFD_VDON, HIGH);		//     _DISPV
 	digitalWrite(Pin_VFD_CS, HIGH);			//     _CS
 
-	SPI.begin();
+	for(int16_t i=0; i<NUMDIGITS; i++)		// preset display buffer
+		buf[i] = 0xff;						// with unused char
 
+	buf[NUMDIGITS] = '\0';					// terminate buffer
+
+#if SUPPLYMODE==0
+	pinMode(Pin_VFD_VDON, OUTPUT);			// _VDON output
 	digitalWrite(Pin_VFD_VDON, HIGH);		// Vdisp OFF
-	delay(1000);
+#else
+	pinMode(Pin_VFD_SUCLK_A, OUTPUT);		// supply clock outputs
+	pinMode(Pin_VFD_SUCLK_B, OUTPUT);
+	//digitalWrite(Pin_VFD_SUCLK_A, LOW);	// filament supply bridge L:L
+	//digitalWrite(Pin_VFD_SUCLK_B, LOW);
+#endif
 
-	digitalWrite(Pin_VFD_VDON, LOW);		// Vdisp ON
-	delay(1);
+	supplyOn();								// supply on
+	SPI.begin();
 
 	digitalWrite(Pin_VFD_RESET, LOW);		// reset
 	delayMicroseconds(1);					// tWRES
@@ -39,10 +47,37 @@ void VFD::init()
 	SPI.endTransaction();
 }
 
-void VFD::off()
+void VFD::supplyOn()
 {
-	digitalWrite(Pin_VFD_VDON, HIGH);
-	delayMicroseconds(2);
+#if SUPPLYMODE==0
+	digitalWrite(Pin_VFD_VDON, LOW);				// Vdisp ON
+#else
+	TCCR2A = 1<<COM2A1 | 1<<COM2B1 | 1<<COM2B0;		// OCR2A low, OCR2B high
+	TCCR2B = 1<<FOC2A | 1<<FOC2B;					// force output compare to fix phase, filament supply bridge L:H
+
+	TCCR2A = 1<<COM2A0 | 1<<COM2B0 | 1<<WGM21;		// OCR2A, OCR2B toggle, CTC
+
+	OCR2A = SUPPLYCYC - 1;							// supply clock cycle
+	OCR2B = SUPPLYCYC - 1;
+
+	TCCR2B = 1<<CS21;								// DIV 8, start supply clock
+#endif
+
+	delay(1);
+}
+
+void VFD::supplyOff()
+{
+#if SUPPLYMODE==0
+	digitalWrite(Pin_VFD_VDON, HIGH);					// Vdisp OFF
+#else
+	TCCR2B = 0;											// stop supply clock
+	TCCR2A = 0;											// OCR2A, OCR2B normal port operation
+	//digitalWrite(Pin_VFD_SUCLK_A, LOW);				// filament supply bridge L:L
+	//digitalWrite(Pin_VFD_SUCLK_B, LOW);
+#endif
+
+	delay(1);
 }
 
 void VFD::write(char* text)
@@ -152,7 +187,7 @@ char VFD::getCode(char c)
 		c += 16;
 	else if(c>='a' && c<='z')			// 97.. -> 17..
 		c -= 80;
-	else								// invalid -> ?
+	else								// unvalid -> ?
 		c = 79;
 
 	return c;

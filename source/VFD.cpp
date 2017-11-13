@@ -25,8 +25,8 @@ void VFD::init()
 	digitalWrite(Pin_VFD_VDON, HIGH);		// Vdisp OFF
 #else
 	pinMode(Pin_VFD_SUCLK_A, OUTPUT);		// supply clock outputs
-	pinMode(Pin_VFD_SUCLK_B, OUTPUT);
-	//digitalWrite(Pin_VFD_SUCLK_A, LOW);	// filament supply bridge L:L
+	pinMode(Pin_VFD_SUCLK_B, OUTPUT);       // OC2A:OC2B L:L
+	//digitalWrite(Pin_VFD_SUCLK_A, LOW);
 	//digitalWrite(Pin_VFD_SUCLK_B, LOW);
 #endif
 
@@ -52,10 +52,10 @@ void VFD::supplyOn()
 #if SUPPLYMODE==0
 	digitalWrite(Pin_VFD_VDON, LOW);				// Vdisp ON
 #else
-	TCCR2A = 1<<COM2A1 | 1<<COM2B1 | 1<<COM2B0;		// OCR2A low, OCR2B high
-	TCCR2B = 1<<FOC2A | 1<<FOC2B;					// force output compare to fix phase, filament supply bridge L:H
+	TCCR2A = 1<<COM2A1 | 1<<COM2B1 | 1<<COM2B0;		// OC2A:OC2B L:H
+	TCCR2B = 1<<FOC2A | 1<<FOC2B;					// force output compare to fix phase
 
-	TCCR2A = 1<<COM2A0 | 1<<COM2B0 | 1<<WGM21;		// OCR2A, OCR2B toggle, CTC
+	TCCR2A = 1<<COM2A0 | 1<<COM2B0 | 1<<WGM21;		// OC2A, OC2B toggle, CTC
 
 	OCR2A = SUPPLYCYC - 1;							// supply clock cycle
 	OCR2B = SUPPLYCYC - 1;
@@ -72,8 +72,8 @@ void VFD::supplyOff()
 	digitalWrite(Pin_VFD_VDON, HIGH);					// Vdisp OFF
 #else
 	TCCR2B = 0;											// stop supply clock
-	TCCR2A = 0;											// OCR2A, OCR2B normal port operation
-	//digitalWrite(Pin_VFD_SUCLK_A, LOW);				// filament supply bridge L:L
+	TCCR2A = 0;											// OC2A:OC2B L:L, normal port operation
+	//digitalWrite(Pin_VFD_SUCLK_A, LOW);
 	//digitalWrite(Pin_VFD_SUCLK_B, LOW);
 #endif
 
